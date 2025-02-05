@@ -8,6 +8,7 @@ import com.hsms.clinicalService.service.HospitalService;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,7 +23,7 @@ public class HospitalServiceImpl implements HospitalService {
   @Override
   public Flux<HospitalDTO> getAllHospitals(Integer pageNumber, Integer pageSize) {
     return hospitalRepository
-        .findAllBy(PageRequest.of(pageNumber, pageSize))
+        .findAllBy(PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id")))
         .map(hospitalMapper::toDTO);
   }
 

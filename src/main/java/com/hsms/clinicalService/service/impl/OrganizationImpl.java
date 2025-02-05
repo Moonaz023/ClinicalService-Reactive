@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,7 +26,7 @@ public class OrganizationImpl implements OrganizationService {
   public Flux<OrganizationDTO> findOrganizations(Integer pageNumber, Integer pageSize) {
 
     return organizationRepository
-        .findAllBy(PageRequest.of(pageNumber, pageSize))
+        .findAllBy(PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id")))
         .flatMap(
             organization ->
                 hospitalRepository

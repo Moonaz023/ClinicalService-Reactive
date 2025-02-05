@@ -8,6 +8,7 @@ import com.hsms.clinicalService.service.UserService;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,7 +22,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Flux<UserDTO> getAllUsers(Integer pageNumber, Integer pageSize) {
-    return userRepository.findAllBy(PageRequest.of(pageNumber, pageSize)).map(userMapper::toDTO);
+    return userRepository
+        .findAllBy(PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.ASC, "id")))
+        .map(userMapper::toDTO);
   }
 
   @Override
