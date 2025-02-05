@@ -1,9 +1,7 @@
-/*
 package com.hsms.clinicalService.controller;
 
-import com.hsms.ReactiveClinicalService.dto.UserDTO;
-import com.hsms.ReactiveClinicalService.service.UserService;
-import java.util.NoSuchElementException;
+import com.hsms.clinicalService.dto.UserDTO;
+import com.hsms.clinicalService.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,34 +23,22 @@ import reactor.core.publisher.Mono;
 public class UserController {
   private final UserService userService;
 
-
-
-
   @GetMapping
-  public Flux<UserDTO> getAllUsers() {
-    return userService.getAllUsers();
+  public Flux<UserDTO> getUsers(
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+    return userService.getAllUsers(page, size);
   }
 
-  */
-/**
-   * Saves a user and associates it with an existing hospital.
-   * --
-   * Due to the lack of support for relationship-saving in reactive CRUD repositories,
-   * we execute a manual SQL query to persist the user and link it to an existing hospital.
-   * --
-   * The return type is a confirmation message (String) as the manual query doesn't return the saved entity.
-   *//*
+  @GetMapping("/{id}")
+  public Mono<UserDTO> getUser(@PathVariable Long id) {
+    return userService.findUser(id);
+  }
 
   @PostMapping
-  public Mono<ResponseEntity<String>> saveUser(@RequestBody UserDTO userDTO) {
+  public Mono<ResponseEntity<UserDTO>> saveUser(@RequestBody UserDTO userDTO) {
     return userService
         .saveUser(userDTO)
-        .map(ResponseEntity::ok)
-        .onErrorResume(
-            error ->
-                Mono.just(
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Error: " + error.getMessage())));
+        .map(savedHospital -> ResponseEntity.status(HttpStatus.CREATED).body(savedHospital));
   }
 
   @DeleteMapping("/{id}")
@@ -61,34 +48,12 @@ public class UserController {
         .then(Mono.just(ResponseEntity.ok("User with ID " + id + " was successfully deleted.")));
   }
 
-  */
-/**
-   * Update a user and associates it with hospital.
-   * --
-   * Due to the lack of support for relationship-saving in reactive CRUD repositories,
-   * we execute a manual SQL query to persist the user and link it to an existing hospital.
-   * --
-   * The return type is a confirmation message (String) as the manual query doesn't return the
-   * updated entity.
-   *//*
-
   @PutMapping("/{id}")
-  public Mono<ResponseEntity<String>> updateUser(
+  public Mono<ResponseEntity<UserDTO>> updateUser(
       @PathVariable long id, @RequestBody UserDTO userDTO) {
     return userService
         .updateUser(id, userDTO)
-        .map(successMessage -> ResponseEntity.status(HttpStatus.OK).body(successMessage))
-        .onErrorResume(
-            error -> {
-              if (error instanceof NoSuchElementException) {
-                return Mono.just(
-                    ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage()));
-              } else {
-                return Mono.just(
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Error: " + error.getMessage()));
-              }
-            });
+        .map(ResponseEntity::ok)
+        .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
   }
 }
-*/

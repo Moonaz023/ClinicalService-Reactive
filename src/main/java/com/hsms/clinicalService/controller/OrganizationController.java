@@ -29,6 +29,11 @@ public class OrganizationController {
     return organizationService.findOrganizations(page, size);
   }
 
+  @GetMapping("/{id}")
+  public Mono<OrganizationDTO> getOrganizations(@PathVariable Long id) {
+    return organizationService.findOrganization(id);
+  }
+
   @PostMapping
   public Mono<ResponseEntity<OrganizationDTO>> addNewOrganization(
       @RequestBody OrganizationDTO organizationDTO) {

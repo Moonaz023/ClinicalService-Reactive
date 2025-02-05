@@ -22,10 +22,26 @@ public class OrganizationImpl implements OrganizationService {
   private final OrganizationMapper organizationMapper;
 
   @Override
-  public Flux<OrganizationDTO> findOrganizations(Integer pageNumber,Integer pageSize) {
+  public Flux<OrganizationDTO> findOrganizations(Integer pageNumber, Integer pageSize) {
 
     return organizationRepository
         .findAllBy(PageRequest.of(pageNumber, pageSize))
+        .flatMap(
+            organization ->
+                hospitalRepository
+                    .findIdByOrganizationId(organization.getId())
+                    .collect(Collectors.toSet())
+                    .map(
+                        hospitalIds -> {
+                          organization.setHospitals(hospitalIds);
+                          return organizationMapper.toDTO(organization);
+                        }));
+  }
+
+  @Override
+  public Mono<OrganizationDTO> findOrganization(Long id) {
+    return organizationRepository
+        .findById(id)
         .flatMap(
             organization ->
                 hospitalRepository
@@ -46,7 +62,7 @@ public class OrganizationImpl implements OrganizationService {
   }
 
   @Override
-  public Mono<OrganizationDTO> updateOrganization(long id, OrganizationDTO organizationDTO) {
+  public Mono<OrganizationDTO> updateOrganization(Long id, OrganizationDTO organizationDTO) {
     return organizationRepository
         .findById(id)
         .flatMap(
@@ -61,7 +77,7 @@ public class OrganizationImpl implements OrganizationService {
   }
 
   @Override
-  public Mono<Void> deleteOrganization(long id) {
+  public Mono<Void> deleteOrganization(Long id) {
     return organizationRepository
         .findById(id)
         .switchIfEmpty(

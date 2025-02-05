@@ -1,24 +1,24 @@
-package com.hsms.clinicalService.entity;
+package com.hsms.clinicalService.dto;
 
-import java.util.Set;
+import com.hsms.clinicalService.entity.Hospital;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Table
-public class Organization {
-  @Id private Long id;
-  private String name;
-  private String address;
+public class UserDTO {
+  private Long id;
 
-  @Transient
-  private Set<Long> hospitals ;
+  private String username;
+
+  private String password;
+
+  private Long hospitalId;
 }

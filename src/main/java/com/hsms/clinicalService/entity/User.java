@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @AllArgsConstructor
@@ -20,14 +20,6 @@ public class User {
 
   private String password;
 
-  private boolean enabled = true;
-
-  private boolean accountNonExpired = true;
-
-  private boolean accountNonLocked = true;
-
-  private boolean credentialsNonExpired = true;
-
-  @MappedCollection(idColumn = "hospital_id")
-  private Hospital hospitalId;
+  @Column("hospital_id")
+  private Long hospitalId;
 }

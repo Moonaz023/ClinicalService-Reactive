@@ -2,7 +2,6 @@ package com.hsms.clinicalService.controller;
 
 import com.hsms.clinicalService.dto.HospitalDTO;
 import com.hsms.clinicalService.service.HospitalService;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +24,14 @@ public class HospitalController {
   private final HospitalService hospitalService;
 
   @GetMapping
-  public Flux<HospitalDTO> getHospitals(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+  public Flux<HospitalDTO> getHospitals(
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
     return hospitalService.getAllHospitals(page, size);
+  }
+
+  @GetMapping("/{id}")
+  public Mono<HospitalDTO> getHospital(@PathVariable Long id) {
+    return hospitalService.findHospital(id);
   }
 
   @PostMapping

@@ -8,6 +8,8 @@ public interface HospitalService {
 
   Flux<HospitalDTO> getAllHospitals(Integer pageNumber,Integer pageSize);
 
+  Mono<HospitalDTO> findHospital(Long id);
+
   Mono<HospitalDTO> saveHospital(HospitalDTO hospitalDTO);
 
   Mono<Void> deleteHospital(long id);

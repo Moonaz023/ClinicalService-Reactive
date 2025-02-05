@@ -15,5 +15,5 @@ public class OrganizationDTO {
   private Long id;
   private String name;
   private String address;
-  private Set<Long> hospitals ;
+  private Set<Long> hospitals;
 }

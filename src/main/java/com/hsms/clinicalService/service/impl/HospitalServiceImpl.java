@@ -27,6 +27,11 @@ public class HospitalServiceImpl implements HospitalService {
   }
 
   @Override
+  public Mono<HospitalDTO> findHospital(Long id) {
+    return hospitalRepository.findById(id).map(hospitalMapper::toDTO);
+  }
+
+  @Override
   public Mono<HospitalDTO> saveHospital(HospitalDTO hospitalDTO) {
     Hospital hospital = hospitalMapper.toEntity(hospitalDTO);
     return hospitalRepository.save(hospital).map(hospitalMapper::toDTO);
