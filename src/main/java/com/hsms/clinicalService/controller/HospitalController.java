@@ -2,7 +2,6 @@ package com.hsms.clinicalService.controller;
 
 import com.hsms.clinicalService.dto.HospitalDTO;
 import com.hsms.clinicalService.service.HospitalService;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,10 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/v1/api/hospitals")
 public class HospitalController {
   private final HospitalService hospitalService;
+  Mono<HospitalDTO> allHospitalFromCache;
+  Flux<HospitalDTO> allHospitalsInformation;
 
+  Mono<Boolean> isSaved;
   @GetMapping
   public Flux<HospitalDTO> getHospitals(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
     return hospitalService.getAllHospitals(page, size);
@@ -31,6 +33,7 @@ public class HospitalController {
 
   @PostMapping
   public Mono<ResponseEntity<HospitalDTO>> saveHospital(@RequestBody HospitalDTO hospitalDTO) {
+    isSaved = hospitalService.saveHospitalToCache(hospitalDTO);
     return hospitalService
         .saveHospital(hospitalDTO)
         .map(savedHospital -> ResponseEntity.status(HttpStatus.CREATED).body(savedHospital));
