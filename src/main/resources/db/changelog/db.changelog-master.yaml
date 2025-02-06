@@ -1,7 +1,58 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
-      author: Nidhro
+      id: 1.1
+      author: Moonaz
+      changes:
+        - createTable:
+            tableName: organization
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 1.2
+      author: Moonaz
+      changes:
+        - createTable:
+            tableName: hospital
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: organization_id
+                  type: INT
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 1.3
+      author: Moonaz
       changes:
         - createTable:
             tableName: users
@@ -18,149 +69,37 @@ databaseChangeLog:
                     unique: true
                     nullable: false
               - column:
-                  name: email
-                  type: VARCHAR(255)
-                  constraints:
-                    unique: true
-                    nullable: false
-              - column:
                   name: password
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
-                  name: enabled
-                  type: BOOLEAN
-                  defaultValue: 'true'
-
-  - changeSet:
-      id: 2
-      author: Nidhro
-      changes:
-        - createTable:
-            tableName: roles
-            columns:
-              - column:
-                  name: id
-                  type: SERIAL
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: name
-                  type: VARCHAR(255)
-                  constraints:
-                    unique: true
-                    nullable: false
-
-  - changeSet:
-      id: 3
-      author: Nidhro
-      changes:
-        - createTable:
-            tableName: privileges
-            columns:
-              - column:
-                  name: id
-                  type: SERIAL
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: name
-                  type: VARCHAR(255)
-                  constraints:
-                    unique: true
-                    nullable: false
-
-  - changeSet:
-      id: 4
-      author: Nidhro
-      changes:
-        - createTable:
-            tableName: user_roles
-            columns:
-              - column:
-                  name: id
-                  type: SERIAL
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: user_id
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-              - column:
-                  name: role_id
-                  type: BIGINT
+                  name: hospital_id
+                  type: INT
                   constraints:
                     nullable: false
 
   - changeSet:
-      id: 5
-      author: Nidhro
-      changes:
-        - createTable:
-            tableName: role_privileges
-            columns:
-              - column:
-                  name: id
-                  type: SERIAL
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: role_id
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-              - column:
-                  name: privilege_id
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-
-  - changeSet:
-      id: 6
-      author: Nidhro
+      id: 1.4
+      author: Moonaz
       changes:
         - addForeignKeyConstraint:
-            constraintName: fk_user_roles_user_id
-            baseTableName: user_roles
-            baseColumnNames: user_id
-            referencedTableName: users
+            constraintName: fk_hospital_organization
+            baseTableName: hospital
+            baseColumnNames: organization_id
+            referencedTableName: organization
             referencedColumnNames: id
             onDelete: CASCADE
 
   - changeSet:
-      id: 7
-      author: Nidhro
+      id: 1.5
+      author: Moonaz
       changes:
         - addForeignKeyConstraint:
-            constraintName: fk_user_roles_role_id
-            baseTableName: user_roles
-            baseColumnNames: role_id
-            referencedTableName: roles
+            constraintName: fk_user_hospital
+            baseTableName: users
+            baseColumnNames: hospital_id
+            referencedTableName: hospital
             referencedColumnNames: id
             onDelete: CASCADE
 
-  - changeSet:
-      id: 8
-      author: Nidhro
-      changes:
-        - addForeignKeyConstraint:
-            constraintName: fk_role_privileges_role_id
-            baseTableName: role_privileges
-            baseColumnNames: role_id
-            referencedTableName: roles
-            referencedColumnNames: id
-            onDelete: CASCADE
-
-  - changeSet:
-      id: 9
-      author: Nidhro
-      changes:
-        - addForeignKeyConstraint:
-            constraintName: fk_role_privileges_privilege_id
-            baseTableName: role_privileges
-            baseColumnNames: privilege_id
-            referencedTableName: privileges
-            referencedColumnNames: id
-            onDelete: CASCADE
