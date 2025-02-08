@@ -40,15 +40,6 @@ public class HospitalServiceImpl implements HospitalService {
     return hospitalRepository.save(hospital).map(hospitalMapper::toDTO);
   }
 
-    @Override
-    public Mono<Boolean> saveHospitalToCache(HospitalDTO hospitalDTO) {
-      Hospital hospital = hospitalMapper.toEntity(hospitalDTO);
-      return reactiveRedisTemplate.opsForHash()
-              .put( hashReference,key , hospital.toString())  // Save the User entity in Redis Hash under the key "user:{id}"
-              .thenReturn(true);
-    }
-
-
   @Override
   public Mono<Void> deleteHospital(long id) {
     return hospitalRepository

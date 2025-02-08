@@ -2,7 +2,9 @@ package com.hsms.clinicalService.controller;
 
 import com.hsms.clinicalService.dto.HospitalDTO;
 import com.hsms.clinicalService.service.HospitalService;
+import com.hsms.clinicalService.service.impl.RedisHospitalServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/v1/api/hospitals")
 public class HospitalController {
   private final HospitalService hospitalService;
+  private RedisHospitalServiceImpl redisHospitalService;
   Mono<HospitalDTO> allHospitalFromCache;
   Flux<HospitalDTO> allHospitalsInformation;
 
@@ -33,7 +36,7 @@ public class HospitalController {
 
   @PostMapping
   public Mono<ResponseEntity<HospitalDTO>> saveHospital(@RequestBody HospitalDTO hospitalDTO) {
-    isSaved = hospitalService.saveHospitalToCache(hospitalDTO);
+    isSaved = redisHospitalService.saveHospitalToCache(hospitalDTO);
     return hospitalService
         .saveHospital(hospitalDTO)
         .map(savedHospital -> ResponseEntity.status(HttpStatus.CREATED).body(savedHospital));
