@@ -7,10 +7,11 @@ import com.hsms.clinicalService.service.impl.redis.services.RedisHospitalService
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import reactor.core.publisher.Mono;
 
+import static com.hsms.clinicalService.constans.RedisConstants.HOSPITAL_REFERENCE;
+import static com.hsms.clinicalService.constans.RedisConstants.KEY_HOSPITAL;
+
 public class RedisHospitalServiceImpl implements RedisHospitalService {
     public final HospitalMapper hospitalMapper;
-    private final String hashReference = "hospital";
-    private final String key = "hospital_information";
     private ReactiveRedisTemplate<String, String> reactiveRedisTemplate;
     public RedisHospitalServiceImpl(HospitalMapper hospitalMapper) {
         this.hospitalMapper = hospitalMapper;
@@ -20,7 +21,7 @@ public class RedisHospitalServiceImpl implements RedisHospitalService {
     public Mono<Boolean> saveHospitalToCache(HospitalDTO hospitalDTO) {
         Hospital hospital = hospitalMapper.toEntity(hospitalDTO);
         return reactiveRedisTemplate.opsForHash()
-                .put( hashReference,key , hospital.toString())  // Save the User entity in Redis Hash under the key "user:{id}"
+                .put( HOSPITAL_REFERENCE,KEY_HOSPITAL , hospital.toString())  // Save the User entity in Redis Hash under the key "user:{id}"
                 .thenReturn(true);
     }
 }
